@@ -1,23 +1,23 @@
-# This is a basic workflow to help you get started with Actions
-name: Upload  s3
-# Controls when the action will run.
+name: combine
 on:
-  # Triggers the workflow on push or pull request events but only for the main branch
   push:
     branches:
       - master
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   build:
-    # The type of runner t
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
-      - name: Upload  s3
+      - name: Checkout Repository
+        uses: actions/checkout@v2 # Use a specific version of the action
+
+      - name: Upload to S3
         run: |
+          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws configure set aws_default_region ${{ secrets.AWS_DEFAULT_REGION }}
+          aws configure set aws_session_token ${{ secrets.AWS_SESSION_TOKEN }}
+
           aws s3 cp .github/workflows/anshal.txt s3://projectbucketgrp6/test/
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
