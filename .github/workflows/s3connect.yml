@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v2 # Use a specific version of the action
+        uses: actions/checkout@v2
 
       - name: Upload to S3
         run: |
