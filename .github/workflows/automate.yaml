@@ -33,7 +33,7 @@ Resources:
       GlueVersion: 4.0
       Command:
         Name: glueetl
-        ScriptLocation: s3://grp-6-py-scripts/street n outcome pre process.py
+        ScriptLocation: s3://grp-6-py-scripts/transform.py
       DefaultArguments:
         "--job-language": "python"
       ExecutionProperty:
@@ -41,15 +41,10 @@ Resources:
 
   GlueWorkflow:
     Type: AWS::Glue::Workflow
-    DependsOn:
-      - SourceBucket
-      - DestinationBucket
-      - IngestionGlueJob
-      - TransformationGlueJob
     Properties:
       Description: ETL Job
       MaxConcurrentRuns: 1
-      Name: myworkflow
+      Name: crime-workflow
 
   GlueTriggerImport:
     Type: AWS::Glue::Trigger
@@ -62,7 +57,7 @@ Resources:
       Description: Triggers the Import Jobs
       Name: gluetriggerimport
       Type: ON_DEMAND
-      WorkflowName: myworkflow
+      WorkflowName: crime-workflow
 
   GlueTriggerTransform:
     Type: AWS::Glue::Trigger
@@ -82,4 +77,4 @@ Resources:
             State: SUCCEEDED
         Logical: AND
       Type: CONDITIONAL
-      WorkflowName: myworkflow
+      WorkflowName: crime-workflow
