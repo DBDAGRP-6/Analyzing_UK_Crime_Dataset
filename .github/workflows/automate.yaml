@@ -1,0 +1,85 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+Resources:
+  SourceBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: grp6-datalakexxx
+
+  DestinationBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: grp6-datawarexxx
+
+  IngestionGlueJob:
+    Type: AWS::Glue::Job
+    Properties:
+      Name: crime-ingestion
+      Role: arn:aws:iam::234578692179:role/LabRole
+      GlueVersion: 4.0
+      Command:
+        Name: glueetl
+        ScriptLocation: s3://grp-6-py-scripts/ingesion_script.py
+      DefaultArguments:
+        "--job-language": "python"
+      ExecutionProperty:
+        MaxConcurrentRuns: 1
+
+  TransformationGlueJob:
+    Type: AWS::Glue::Job
+    Properties:
+      Name: crime-transformation
+      Role: arn:aws:iam::234578692179:role/LabRole
+      GlueVersion: 4.0
+      Command:
+        Name: glueetl
+        ScriptLocation: s3://grp-6-py-scripts/street n outcome pre process.py
+      DefaultArguments:
+        "--job-language": "python"
+      ExecutionProperty:
+        MaxConcurrentRuns: 1
+
+  GlueWorkflow:
+    Type: AWS::Glue::Workflow
+    DependsOn:
+      - SourceBucket
+      - DestinationBucket
+      - IngestionGlueJob
+      - TransformationGlueJob
+    Properties:
+      Description: ETL Job
+      MaxConcurrentRuns: 1
+      Name: myworkflow
+
+  GlueTriggerImport:
+    Type: AWS::Glue::Trigger
+    DependsOn:
+      - GlueWorkflow
+      - IngestionGlueJob
+    Properties:
+      Actions:
+        - JobName: !Ref IngestionGlueJob
+      Description: Triggers the Import Jobs
+      Name: gluetriggerimport
+      Type: ON_DEMAND
+      WorkflowName: myworkflow
+
+  GlueTriggerTransform:
+    Type: AWS::Glue::Trigger
+    DependsOn:
+      - GlueWorkflow
+      - TransformationGlueJob
+      - GlueTriggerImport
+    Properties:
+      Actions:
+        - JobName: !Ref TransformationGlueJob
+      Description: Triggers the Import Jobs
+      Name: gluetriggertransform
+      Predicate:
+        Conditions:
+          - JobName: !Ref IngestionGlueJob
+            LogicalOperator: EQUALS
+            State: SUCCEEDED
+        Logical: AND
+      Type: CONDITIONAL
+      WorkflowName: myworkflow
