@@ -90,12 +90,8 @@ Resources:
     Type: AWS::Glue::Crawler
     Properties:
       Name: data-crawler
-      Role: arn:aws:iam::234578692179:role/LabRole
       DatabaseName: default # Replace with your desired Glue database name
       Targets:
         S3Targets:
           - Path: s3://grp6-datawarexxx # Specify the path of the bucket you want to crawl
-      SchemaChangeDetectionPolicy:
-        CrawlerName: data-crawler
-        RecrawlBehavior: CRAWL_EVERYTHING
-      Configuration: '{"Version":1.0}' # You can specify additional configurations here
+      Role: arn:aws:iam::234578692179:role/LabRole
