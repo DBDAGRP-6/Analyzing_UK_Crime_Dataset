@@ -17,6 +17,9 @@ Resources:
       Name: crime-ingestion
       Role: arn:aws:iam::234578692179:role/LabRole
       GlueVersion: 4.0
+      NumberOfWorkers: 5
+      Timeout: 30
+      WorkerType: G.1X
       Command:
         Name: glueetl
         ScriptLocation: s3://grp-6-py-scripts/ingesion_script.py
@@ -31,6 +34,9 @@ Resources:
       Name: crime-transformation
       Role: arn:aws:iam::234578692179:role/LabRole
       GlueVersion: 4.0
+      NumberOfWorkers: 5
+      Timeout: 30
+      WorkerType: G.1X
       Command:
         Name: glueetl
         ScriptLocation: s3://grp-6-py-scripts/transform.py
@@ -77,4 +83,5 @@ Resources:
             State: SUCCEEDED
         Logical: AND
       Type: CONDITIONAL
+      StartOnCreation: True
       WorkflowName: crime-workflow
