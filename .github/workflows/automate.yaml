@@ -74,7 +74,7 @@ Resources:
     Properties:
       Actions:
         - JobName: !Ref TransformationGlueJob
-      Description: Triggers the Import Jobs
+      Description: Triggers the transformation job 
       Name: gluetriggertransform
       Predicate:
         Conditions:
