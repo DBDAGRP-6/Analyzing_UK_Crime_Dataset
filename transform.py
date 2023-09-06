@@ -17,7 +17,7 @@ spark = glueContext.spark_session
  
 #path
 
-df_street = spark.read.parquet("s3://grp6-datalake/street/",header=True,inferSchema=True)
+df_street = spark.read.parquet("s3://grp6-datalakexxx/street/",header=True,inferSchema=True)
 
 
 #Dropping or filling null values
@@ -140,7 +140,7 @@ df_street= df_street.withColumn("Crime type", when(conditions[0][0], conditions[
 
 #----------------------------------------------------------outcome------------------------------------------------------------------------------
 
-df_outcome = spark.read.parquet("s3://grp6-datalake/outcomes/",header=True,inferSchema=True)
+df_outcome = spark.read.parquet("s3://grp6-datalakexxx/outcomes/",header=True,inferSchema=True)
 
 #dropping columns which are already present in Street 
 temp=['Reported by','Falls within','Longitude','Latitude','Location','LSOA code','LSOA name']
@@ -182,13 +182,13 @@ joined_df_filled = joined_df.withColumn("Date", F.to_timestamp(
 #calculating difference between month of case & month of outcome
 joined_df_filled = joined_df_filled.withColumn("months_between", months_between(col("Date"), col("Month")))
 
-joined_df_filled.repartition(1).write.parquet('s3://grp6-dataware/final')
+joined_df_filled.repartition(1).write.parquet('s3://grp6-datawarexxx/master')
 
 #========================================================Stop and search====================================================
 
 from pyspark.sql.functions import col, to_timestamp, date_format,concat,lit, to_timestamp, from_utc_timestamp,when
 
-df =spark.read.parquet("s3://grp6-datalake/stop_n_search/",header=True,inferSchema=True)
+df =spark.read.parquet("s3://grp6-datalakexxx/stop_n_search",header=True,inferSchema=True)
 
 df=df.drop(*['Part of a policing operation','Policing operation','Officer-defined ethnicity','Outcome linked to object of search','Removal of more than just outer clothing'])
 
@@ -219,7 +219,7 @@ conditions = [
 
 df= df.withColumn("Outcome type", when(conditions[0][0], conditions[0][1]).when(conditions[1][0], conditions[1][1]).otherwise('Other'))
 
-df.repartition(1).write.parquet("s3://grp6-dataware/stop")
+df.repartition(1).write.parquet("s3://grp6-datawarexxx/stop")
 
 
 job = Job(glueContext)
