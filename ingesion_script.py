@@ -22,18 +22,18 @@ connection_properties = {
 outcomes_df = spark.read.jdbc(url=jdbc_url, table="Crime_Outcomes", properties=connection_properties)
 outcomes_df1 = spark.read.csv("s3://raw-proj-files-19-23/outcomes/")
 outcomes = outcomes_df.union(outcomes_df1)
-outcomes.repartition(1).write.parquet("s3://grp6-datalakexxx/outcomes")
+outcomes.repartition(1).write.parquet("s3://group-6-datalake/outcomes")
 
 street_df = spark.read.jdbc(url=jdbc_url, table="Street_Crimes", properties=connection_properties)
 street_df1 = spark.read.csv("s3://raw-proj-files-19-23/street/")
 street = street_df.union(street_df1)
-street.repartition(1).write.parquet("s3://grp6-datalakexxx/street")
+street.repartition(1).write.parquet("s3://group-6-datalake/street")
 
 
 stop_n_search_df = spark.read.jdbc(url=jdbc_url, table="Stop_And_Search", properties=connection_properties)
 stop_n_search_df1 = spark.read.csv("s3://raw-proj-files-19-23/stop_and_search/")
 stop_n_search = stop_n_search_df.union(stop_n_search_df1)
-stop_n_search.repartition(1).write.parquet("s3://grp6-datalakexxx/stop_n_search")
+stop_n_search.repartition(1).write.parquet("s3://group-6-datalake/stop_n_search")
 
 
 job = Job(glueContext)

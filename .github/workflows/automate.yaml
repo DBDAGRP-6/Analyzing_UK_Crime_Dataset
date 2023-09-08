@@ -4,12 +4,12 @@ Resources:
   SourceBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: grp6-datalakexxx
+      BucketName: group-6-datalake
 
   DestinationBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: grp6-datawarexxx
+      BucketName: group-6-datawarehouse
 
   IngestionGlueJob:
     Type: AWS::Glue::Job
